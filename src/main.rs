@@ -1,4 +1,4 @@
-use rust_htslib::{bam, bam::Read, bam::index, bam::index::Type};
+use rust_htslib::{bam, bam::Read, bam::index};
 use std::path::{Path, PathBuf};
 
 
