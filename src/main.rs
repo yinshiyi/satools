@@ -10,10 +10,12 @@ fn main() {
 
     // print header records to the terminal, akin to samtool
     for (key, records) in header.to_hashmap() {
-        for record in records {
-            println!("@{}\tSN:{}\tLN:{}", key, record["SN"], record["LN"]);
+        if key == "SQ" {
+            for record in records {
+                println!("@{}\tSN:{}\tLN:{}", key, record["SN"], record["LN"]);
+            }
         }
-}
+    }
 }
 
 
