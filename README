@@ -1,2 +1,7 @@
 test file
 for interacting with the bam header, no index file is needed
+
+
+action items:
+1. add sort function to handle unsorted bam files
+2. report additional record levels stats, something does not exist in header level
