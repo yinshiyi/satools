@@ -1,14 +1,33 @@
-use rust_htslib::{bam, bam::Read};
+use rust_htslib::{bam, bam::Read, bam::index, bam::index::Type};
+use std::path::{Path, PathBuf};
+
+
+fn index(bam_path: &Path) {
+    let bam_path_bai: PathBuf = PathBuf::from(format!("{}", bam_path.display())).with_extension("bam.bai");
+
+    println!(
+        "Indexing BAM file: {} -> {}",
+        bam_path.display(),
+        bam_path_bai.display()
+    );
+
+    // Build the BAI index
+    // The build function handles the necessary HTSlib calls to create the index
+    index::build(bam_path, Some(&bam_path_bai), index::Type::Bai, 0).unwrap();
+
+    println!("Index created successfully.");
+}
 
 fn main() {
     // let mut bam = bam::Reader::from_path("test_files/NA06984_T.bam").unwrap();
     // for r in bam.records() {
     //     println!("{:?}", r.unwrap().qname());
     // }
-    let bam = bam::Reader::from_path(&"test_files/NA06984_T.bam").unwrap();
+    let bam_path = Path::new("test_files/NA06984_N.bam");
+    let bam = bam::Reader::from_path(bam_path).unwrap();
     let header = bam::Header::from_template(bam.header());
-
     // print header records to the terminal, akin to samtool
+    // The 'key' variable refers to the record type code (e.g., "SQ" for Sequence Dictionary, "HD" for Header Line)
     for (key, records) in header.to_hashmap() {
         if key == "SQ" {
             for record in records {
@@ -16,6 +35,9 @@ fn main() {
             }
         }
     }
+    // The file must be coordinate-sorted before indexing
+
+    index(bam_path);
 }
 
 
