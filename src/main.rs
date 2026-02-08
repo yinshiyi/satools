@@ -24,7 +24,8 @@ fn main() {
     //     println!("{:?}", r.unwrap().qname());
     // }
     let bam_path = Path::new("test_files/NA06984_N.bam");
-    let bam = bam::Reader::from_path(bam_path).unwrap();
+    //  to investigate whether we need this to be mutable
+    let mut bam = bam::Reader::from_path(bam_path).unwrap();
     let header = bam::Header::from_template(bam.header());
     // print header records to the terminal, akin to samtool
     // The 'key' variable refers to the record type code (e.g., "SQ" for Sequence Dictionary, "HD" for Header Line)
@@ -38,6 +39,33 @@ fn main() {
     // The file must be coordinate-sorted before indexing
 
     index(bam_path);
+
+    // 2. Iterate over records
+    let mut count = 0;
+    for result in bam.records() {
+        let _record = result.unwrap();
+        count += 1;
+
+        /*s
+        // // --- Basic Fields ---
+        // // QNAME (Query Name) - returns &[u8], convert to string for printing
+        // let qname = String::from_utf8_lossy(record.qname());
+
+        // // SEQ (Sequence) - .seq() returns a Seq object, .as_bytes() gives standard ASCII (A, C, G, T)
+        // let seq = record.seq().as_bytes();
+        // let seq_str = String::from_utf8_lossy(&seq);
+
+        // // QUAL (Quality Scores) - returns &[u8] (raw PHRED scores, not offset by 33)
+        // let qual = record.qual();
+
+        // // CIGAR string - returns a View that can be iterated or displayed
+        // let cigar = record.cigar();
+
+        // // Position information
+        // let tid = record.tid(); // Target ID (chromosome index in header)
+        // let pos = record.pos(); // 0-based visualization start position
+        // let mapq = record.mapq(); // Mapping quality
+        */
+    }
+    println!("Total records: {}", count);
 }
-
-
